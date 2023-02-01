@@ -1,2 +1,3 @@
 # Project exclude paths
-/movierater/api/migrations/
+/api/migrations/
+/venv/
