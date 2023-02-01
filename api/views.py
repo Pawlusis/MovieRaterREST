@@ -58,7 +58,7 @@ class MovieViewSet(viewsets.ModelViewSet):
         return Response('Movie deleted')
 
     @action(detail=True)
-    def premiera(self, request, **kwargs):
+    def premiere(self, request, **kwargs):
         movie = self.get_object()
         movie.after_premiere = True
         movie.save()
@@ -67,7 +67,7 @@ class MovieViewSet(viewsets.ModelViewSet):
         return Response(serializer.data)
 
     @action(detail=False, methods=['post'])
-    def premiera_wszystkie(self, request, **kwargs):
+    def premiere_all(self, request, **kwargs):
         movies = Movie.objects.all()
         movies.update(after_premiere=request.data['after_premiere'])
 
