@@ -13,4 +13,9 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 class MovieSerializer(serializers.ModelSerializer):
     class Meta:
         model = Movie
-        fields = ['tittle', 'describe', 'after_premiere']
+        fields = ['id', 'tittle', 'describe', 'after_premiere']
+
+class MovieMiniSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Movie
+        fields = ('tittle',)

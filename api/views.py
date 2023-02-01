@@ -1,16 +1,76 @@
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from rest_framework import viewsets
-from rest_framework import permissions
+from rest_framework.response import Response
+from django.http.response import HttpResponseNotAllowed
+from rest_framework.decorators import action
+
 from api.serializers import UserSerializer
 from .models import Movie
-from .serializers import MovieSerializer
+from .serializers import MovieSerializer, MovieMiniSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all().order_by('-date_joined')
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 class MovieViewSet(viewsets.ModelViewSet):
-    queryset = Movie.objects.all()
     serializer_class = MovieSerializer
+
+    def get_queryset(self):
+        #movies = Movie.objects.filter(after_premiere=True)
+        movies = Movie.objects.all()
+        return movies
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        serializer = MovieSerializer(queryset, many=True)
+        return Response(serializer.data)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = MovieSerializer(instance)
+        return Response(serializer.data)
+
+    def create(self, request, *args, **kwargs):
+        #if request.user.is_superuser:
+        movie = Movie.objects.create(tittle=request.data['tittle'],
+                               describe=request.data['describe'],
+                               after_premiere=request.data['after_premiere'])
+        serializer = MovieSerializer(movie, many=False)
+        return Response(serializer.data)
+        #else:
+        #    return HttpResponseNotAllowed('Not allowed')
+
+    def update(self, request, *args, **kwargs):
+        movie = self.get_object()
+        movie.tittle = request.data['tittle']
+        movie.describe = request.data['describe']
+        movie.after_premiere = request.data['after_premiere']
+        movie.save()
+
+        serializer = MovieSerializer(movie, many=False)
+        return Response(serializer.data)
+
+    def destroy(self, request, *args, **kwargs):
+        movie = self.get_object()
+        movie.delete()
+        return Response('Movie deleted')
+
+    @action(detail=True)
+    def premiera(self, request, **kwargs):
+        movie = self.get_object()
+        movie.after_premiere = True
+        movie.save()
+
+        serializer = MovieSerializer(movie, many=False)
+        return Response(serializer.data)
+
+    @action(detail=False, methods=['post'])
+    def premiera_wszystkie(self, request, **kwargs):
+        movies = Movie.objects.all()
+        movies.update(after_premiere=request.data['after_premiere'])
+
+        serializer = MovieSerializer(movies, many=True)
+        return Response(serializer.data)
+

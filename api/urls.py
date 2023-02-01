@@ -5,7 +5,7 @@ from django.urls import path
 
 router = routers.DefaultRouter()
 router.register(r'users', views.UserViewSet)
-router.register(r'movies', views.MovieViewSet)
+router.register(r'movies', views.MovieViewSet, basename="movie")
 
 urlpatterns = [
     path('', include(router.urls)),
