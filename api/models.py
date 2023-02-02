@@ -10,6 +10,6 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.tittle + "(" + str(self.year) + ")"
-    #test commit and push
+    #test commit
 
 
