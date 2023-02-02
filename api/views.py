@@ -5,8 +5,8 @@ from django.http.response import HttpResponseNotAllowed
 from rest_framework.decorators import action
 
 from api.serializers import UserSerializer
-from .models import Movie, Review
-from .serializers import MovieSerializer, ReviewSerializer
+from .models import Movie, Review, Actor
+from .serializers import MovieSerializer, ReviewSerializer, ActorSerializer
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -85,3 +85,7 @@ class MovieViewSet(viewsets.ModelViewSet):
 class ReviewViewSet(viewsets.ModelViewSet):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
+
+class ActorViewSet(viewsets.ModelViewSet):
+    queryset = Actor.objects.all()
+    serializer_class = ActorSerializer

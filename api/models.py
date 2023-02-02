@@ -30,3 +30,7 @@ class Review(models.Model): #OneToMany
     stars = models.IntegerField(default=5)
     movie = models.ForeignKey(Movie, on_delete=models.CASCADE, related_name='reviews')
 
+class Actor(models.Model): #ManyToMany
+    first_name = models.CharField(max_length=32)
+    last_name =  models.CharField(max_length=32)
+    movies = models.ManyToManyField(Movie)
