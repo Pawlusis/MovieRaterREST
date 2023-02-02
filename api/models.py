@@ -8,4 +8,7 @@ class Movie(models.Model):
     year = models.IntegerField()
     imdb_rating = models.DecimalField(max_digits=4, decimal_places=2)
 
+    def __str__(self):
+        return self.tittle + "(" + str(self.year) + ")"
+
 

@@ -36,7 +36,10 @@ class MovieViewSet(viewsets.ModelViewSet):
         #if request.user.is_superuser:
         movie = Movie.objects.create(tittle=request.data['tittle'],
                                describe=request.data['describe'],
-                               after_premiere=request.data['after_premiere'])
+                               after_premiere=request.data['after_premiere'],
+                               premiere=request.data['premiere'],
+                               year=request.data['year'],
+                               imdb_rating=['imdb_rating'])
         serializer = MovieSerializer(movie, many=False)
         return Response(serializer.data)
         #else:
@@ -47,6 +50,10 @@ class MovieViewSet(viewsets.ModelViewSet):
         movie.tittle = request.data['tittle']
         movie.describe = request.data['describe']
         movie.after_premiere = request.data['after_premiere']
+        movie.premiere=request.data['premiere']
+        movie.year=request.data['year']
+        movie.imdb_rating=['imdb_rating']
+
         movie.save()
 
         serializer = MovieSerializer(movie, many=False)
