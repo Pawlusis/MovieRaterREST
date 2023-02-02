@@ -1,17 +1,26 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
 from .models import Movie, ExtraInfo, Review, Actor
+from rest_framework.authtoken.models import Token
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ('id','username', 'email')
+        fields = ('id', 'username', 'email', 'password')
+        extra_kwargs = {'password': {'required': True, 'write_only': True}}
+
+    def create(self, validated_data):
+        user = User.objects.create_user(**validated_data)
+        # Token.objects.create(user=user)
+        return user
+
 
 class ExtraInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = ExtraInfo
         fields = ('time', 'category')
+
 
 class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
@@ -34,7 +43,7 @@ class MovieSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Movie
-        fields = ('id','tittle', 'describe', 'after_premiere',
+        fields = ('id', 'tittle', 'describe', 'after_premiere',
                   'premiere', 'year', 'imdb_rating',
                   'extra_info', 'reviews')
         read_only_fields = ('extra_info', 'reviews',)
@@ -51,7 +60,7 @@ class ActorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Actor
-        fields = ('id','first_name', 'last_name', 'movies')
+        fields = ('id', 'first_name', 'last_name', 'movies')
 
     # def create(self, validated_data):
     #     movies = validated_data["movies"]

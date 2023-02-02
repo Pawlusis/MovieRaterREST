@@ -1,16 +1,19 @@
 from django.contrib.auth.models import User
 from rest_framework import viewsets, filters
-from rest_framework.response import Response
-from rest_framework.pagination import PageNumberPagination
-from django.http.response import HttpResponseNotAllowed
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.permissions import (
+    DjangoModelPermissions
+)
+from rest_framework.response import Response
 
 from api.serializers import UserSerializer
 from .models import Movie, Review, Actor
 from .serializers import MovieSerializer, ReviewSerializer, ActorSerializer
 
 
-class MovieySetPagination(PageNumberPagination):
+class MovieSetPagination(PageNumberPagination):
     page_size = 2
     page_size_query_param = 'page_size'
     max_page_size = 10
@@ -28,7 +31,9 @@ class MovieViewSet(viewsets.ModelViewSet):
     search_fields = ('tittle', 'describe')
     ordering_fields = '__all__'
     ordering = ('year',)
-    pagination_class = MovieySetPagination
+    pagination_class = MovieSetPagination
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = (DjangoModelPermissions,)
 
     def get_queryset(self):
         # year = self.request.query_params.get('year', None)
